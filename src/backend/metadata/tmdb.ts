@@ -172,6 +172,7 @@ export async function multiSearch(
     include_adult: false,
     language: "en-US",
     page: 1,
+    api_key: apiKey,
   });
   // filter out results that aren't movies or shows
   const results = data.results.filter(
@@ -211,10 +212,16 @@ export function getMediaDetails<
   TReturn = MediaDetailReturn<T>,
 >(id: string, type: T): Promise<TReturn> {
   if (type === TMDBContentTypes.MOVIE) {
-    return get<TReturn>(`/movie/${id}`, { append_to_response: "external_ids" });
+    return get<TReturn>(`/movie/${id}`, {
+      append_to_response: "external_ids",
+      api_key: apiKey,
+    });
   }
   if (type === TMDBContentTypes.TV) {
-    return get<TReturn>(`/tv/${id}`, { append_to_response: "external_ids" });
+    return get<TReturn>(`/tv/${id}`, {
+      append_to_response: "external_ids",
+      api_key: apiKey,
+    });
   }
   throw new Error("Invalid media type");
 }
@@ -233,6 +240,7 @@ export async function getEpisodes(
     episode_number: e.episode_number,
     title: e.name,
     air_date: e.air_date,
+    api_key: apiKey,
   }));
 }
 
@@ -241,6 +249,7 @@ export async function getMovieFromExternalId(
 ): Promise<string | undefined> {
   const data = await get<ExternalIdMovieSearchResult>(`/find/${imdbId}`, {
     external_source: "imdb_id",
+    api_key: apiKey,
   });
 
   const movie = data.movie_results[0];
